@@ -47,7 +47,7 @@ const Home = () => {
     //List one coin after search
 
     useEffect(()=>{
-        axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=100&page=1&sparkline=false')
+        axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false')
         .then(response => {
             setCoins(response.data)
             console.log(response.data)
@@ -81,9 +81,9 @@ const Home = () => {
                                 <Avatar alt={coin.name} src={coin.image} className={classes.symbol}/>
                                 <ListItemText className={classes.name}>{coin.name}</ListItemText>
                                 <ListItemText className={classes.price}>{coin.current_price}</ListItemText>
-                                <ListItemText>{coin.price_change_percentage_24h}</ListItemText>
+                                {coin.price_change_percentage_24h < 0 ? (<ListItemText style={{color: 'red'}}>{coin.price_change_percentage_24h.toFixed(2)}</ListItemText>) : (<ListItemText style={{color: 'green'}}>{coin.price_change_percentage_24h.toFixed(2)}</ListItemText>) }
                                 <ListItemText>{coin.market_cap}</ListItemText>
-                                <ListItemText>{coin.total_volume}</ListItemText>
+                                <ListItemText>{coin.total_volume.toLocaleString()}</ListItemText>
                             </ListItem>
                             <Divider />
                         </List>
