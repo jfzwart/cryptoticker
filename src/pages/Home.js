@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
     const classes = useStyles();
     const [coins, setCoins] = useState([])
+    const [search, setSearch] = useState('')
     //TODO:
     //Create a search field
     //Create a coin list component
@@ -56,16 +57,24 @@ const Home = () => {
         })
     }, [])
 
+    const filteredCoins = coins.filter(coin => 
+        coin.name.toLowerCase().includes(search.toLowerCase())
+    )
+
+    const handleChange = e => {
+        setSearch(e.target.value)
+    }
+
     return (
         <div className={classes.root}>
             <div>
                 <h1>Search a currency</h1>
                 <form className={classes.form} noValidate autoComplete="off">
-                    <TextField id="outlined-basic" label="Currency" variant="outlined" />
+                    <TextField id="outlined-basic" label="Currency" variant="outlined" onChange={handleChange}/>
                 </form>
             </div>
             <div>
-                {coins.map(coin => {
+                {filteredCoins.map(coin => {
                     return(
                         <List className={classes.coin} >
                             <ListItem button className={classes.data}>
