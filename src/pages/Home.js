@@ -46,16 +46,48 @@ const Home = () => {
     //List coins after initial render
     //List one coin after search
 
+    const getCoins = async () => {
+        try {
+            const userCoins = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false')
+            setCoins(userCoins.data)
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+
     useEffect(()=>{
-        axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false')
-        .then(response => {
-            setCoins(response.data)
-            console.log(response.data)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        let repeat;
+
+        async function fetchData() {
+            try {
+                const res = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false')
+                setCoins(res.data)
+                console.log(res.data)
+                repeat = setTimeout(fetchData, 60000);
+            } catch (err) {
+                console.error(err.message);
+            }
+        }
+
+        fetchData();
+
+        return () => {
+            if (repeat) {
+                clearTimeout(repeat)
+            }
+        }
     }, [])
+
+    // useEffect(()=>{
+    //     axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&per_page=250&page=1&sparkline=false')
+    //     .then(response => {
+    //         setCoins(response.data)
+    //         console.log(response.data)
+    //     })
+    //     .catch(error => {
+    //         console.log(error)
+    //     })
+    // }, [])
 
     const filteredCoins = coins.filter(coin => 
         coin.name.toLowerCase().includes(search.toLowerCase())
